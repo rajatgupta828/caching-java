@@ -21,20 +21,23 @@ public class UserService {
     @Value("${eviction.method}")
     private String ev_method;
 
+    @Value("${cache.capacity}")
+    private int capacity;
+
     private InbuiltCacheInterface<User> cacheSelected;
-
-
-    LRUCache<User> lruCache = new LRUCache<>(4);
-    MRUCache<User> mruCache = new MRUCache<>(2);
 
     public void initializeCache(){
         log.info("The selected Caching technique is  : " + ev_method);
         switch (ev_method){
             case("LFU"):
-                this.cacheSelected = new LFUCache<>(4);
+                this.cacheSelected = new LFUCache<>(capacity);
                 break;
             case("MFU"):
-                this.cacheSelected = new MFUCache<>(4);
+                this.cacheSelected = new MFUCache<>(capacity);
+            case("LRU"):
+                this.cacheSelected = new LRUCache<>(capacity);
+            case("MRU"):
+                this.cacheSelected = new MRUCache<>(capacity);
         }
     }
 

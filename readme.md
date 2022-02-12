@@ -16,3 +16,4 @@ This application has below specifications
 
 5. This application runs on default port for tomcat - 8080, under tests , this application includes a basic collection of postman to trigger the requests and get and post ```User```  resource.
 6. This application will also load 5 dummy records at the application start, so it's not mandatory to craete the ```User``` resource before accessing one, and is ready to go.
+7. ```cache.capacity``` will be used to define the capacity of the cache which can not be changed without application restart.
