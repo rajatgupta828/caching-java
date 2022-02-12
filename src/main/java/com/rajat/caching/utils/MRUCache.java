@@ -1,5 +1,6 @@
 package com.rajat.caching.utils;
 
+import com.rajat.caching.interfaces.InbuiltCacheInterface;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -10,7 +11,7 @@ import java.util.Map;
  *            This cache implements a MRU cache , Most Recent is removed first.
  */
 @Slf4j
-public class MRUCache<T> {
+public class MRUCache<T> implements InbuiltCacheInterface<T> {
     private final int capacity;
     private int size;
     private Map<Integer, Node> mruMap;
@@ -25,6 +26,7 @@ public class MRUCache<T> {
     }
 
     // Method to get the value from cache
+    @Override
     public T getValue(int id) {
         Node node = mruMap.get(id);
         if (node == null) {
@@ -36,7 +38,12 @@ public class MRUCache<T> {
         return mruMap.get(id).value;
     }
 
-    //*
+    /**
+     * This method will put the values into the cache
+     * @param id
+     * @param value
+     */
+    @Override
     public void putValue(int id, T value) {
 
         // First try to get the data from current Cache
@@ -69,6 +76,9 @@ public class MRUCache<T> {
         size++;
     }
 
+    /**
+     * This method will be used to print the currect cache list
+     */
     public void printCache(){
         internalQueue.printlist(internalQueue.tail);
     }

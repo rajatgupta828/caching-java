@@ -1,9 +1,13 @@
 package com.rajat.caching.utils;
 
+import com.rajat.caching.interfaces.InbuiltCacheInterface;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 
-public class LFUCache<T> {
+@Slf4j
+public class LFUCache<T> implements InbuiltCacheInterface<T> {
 
     // This hashmap will be used to store the Keys and Values
     HashMap<Integer, T> keyValues;
@@ -31,6 +35,7 @@ public class LFUCache<T> {
      * @param id
      * @return
      */
+    @Override
     public T getValue(int id){
         // If key is not present in the Hashmap already
         if(!keyValues.containsKey(id)){
@@ -54,6 +59,8 @@ public class LFUCache<T> {
 
         // Add the keys to count key-counts map and add the userId to the hashset to maintain the order
         putCount(id,current_count+1);
+        log.info("Current Cache is : " + keyValues.toString());
+        log.info("Current Counts is : " + keyCounts.toString());
         return keyValues.get(id);
     }
 
@@ -62,6 +69,7 @@ public class LFUCache<T> {
      * @param id
      * @param value
      */
+    @Override
     public void putValue(int id, T value){
         // If capacity is 0 or negative, we can not insert
         if(capacity < 0){
@@ -94,6 +102,9 @@ public class LFUCache<T> {
         min = 1;
         putCount(id,min);
         keyValues.put(id,value);
+        log.info("Current Cache is : " + keyValues.toString());
+        log.info("Current Counts is : " + keyCounts.toString());
+        return;
     }
 
     /**

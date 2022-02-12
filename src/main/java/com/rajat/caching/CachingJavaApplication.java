@@ -2,6 +2,7 @@ package com.rajat.caching;
 
 import com.rajat.caching.entities.User;
 import com.rajat.caching.repository.UserRepository;
+import com.rajat.caching.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -19,6 +20,9 @@ public class CachingJavaApplication implements CommandLineRunner {
 	@Autowired
 	UserRepository userRepository;
 
+	@Autowired
+	UserService userService;
+
 	@Override
 	public void run(String... args) throws Exception {
 		log.info("Inserting a few users into the temp database");
@@ -34,5 +38,7 @@ public class CachingJavaApplication implements CommandLineRunner {
 		userRepository.save(user3);
 		userRepository.save(user4);
 		userRepository.save(user5);
+
+		userService.initializeCache();
 	}
 }

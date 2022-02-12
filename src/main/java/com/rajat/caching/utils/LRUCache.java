@@ -1,5 +1,6 @@
 package com.rajat.caching.utils;
 
+import com.rajat.caching.interfaces.InbuiltCacheInterface;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import java.util.Map;
  *     This cache implements a LRU cache , Least Recent is removed first.
  */
 @Slf4j
-public class LRUCache<T> {
+public class LRUCache<T>  implements InbuiltCacheInterface<T> {
     private final int capacity ;
     private int size;
     private Map<Integer, Node> lruMap;
@@ -26,6 +27,7 @@ public class LRUCache<T> {
         this.internalQueue = new CacheLinkedList();
     }
 
+    @Override
     public T getValue(int id){
         Node node = lruMap.get(id);
         if(node == null){
@@ -35,6 +37,7 @@ public class LRUCache<T> {
         return lruMap.get(id).value;
     }
 
+    @Override
     public void putValue(int id, T value){
 
         // First try to get the data from current Cache

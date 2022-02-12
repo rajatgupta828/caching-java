@@ -1,9 +1,14 @@
 package com.rajat.caching.utils;
 
+import com.rajat.caching.entities.User;
+import com.rajat.caching.interfaces.InbuiltCacheInterface;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 
-public class MFUCache<T> {
+@Slf4j
+public class MFUCache<T> implements InbuiltCacheInterface<T> {
 
     // This hashmap will be used to store the Keys and Values
     HashMap<Integer, T> keyValues;
@@ -32,6 +37,7 @@ public class MFUCache<T> {
      * @param id
      * @return
      */
+    @Override
     public T getValue(int id){
         // If key is not present in the Hashmap already
         if(!keyValues.containsKey(id)){
@@ -59,6 +65,8 @@ public class MFUCache<T> {
 
         // Add the keys to count key-counts map and add the userId to the hashset to maintain the order
         putCount(id,current_count+1);
+        log.info("Current Cache is : " + keyValues.toString());
+        log.info("Current Counts is : " + keyCounts.toString());
         return keyValues.get(id);
     }
 
@@ -67,6 +75,7 @@ public class MFUCache<T> {
      * @param id
      * @param value
      */
+    @Override
     public void putValue(int id, T value){
         // If capacity is 0 or negative, we can not insert
         if(capacity < 0){
@@ -99,10 +108,18 @@ public class MFUCache<T> {
         if(keyValues.size() >= capacity){
             // evict LRU from the minimum count bucket
             evict(countToLruKeys.get(max).iterator().next());
-            min = 1;
-            putCount(id,min);
-            keyValues.put(id,value);
         }
+
+
+        min = 1;
+        if(max < min){
+            max = min;
+        }
+        putCount(id,min);
+        keyValues.put(id,value);
+        log.info("Current Cache is : " + keyValues.toString());
+        log.info("Current Count is : " + keyCounts.toString());
+        return;
     }
 
     /**
@@ -114,6 +131,7 @@ public class MFUCache<T> {
     private void evict(int id) {
         countToLruKeys.get(max).remove(id);
         keyValues.remove(id);
+        keyCounts.remove(id);
     }
 
     /**
@@ -126,6 +144,4 @@ public class MFUCache<T> {
         countToLruKeys.computeIfAbsent(count, ignore -> new LinkedHashSet<>());
         countToLruKeys.get(count).add(id);
     }
-
-
 }
